@@ -1,8 +1,9 @@
-package server
+package server_test
 
 import (
 	"bytes"
 	"calculator/pkg/calculate"
+	"calculator/server"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -39,7 +40,7 @@ func TestApplication_RunServer(t *testing.T) {
 
 			rr := httptest.NewRecorder()
 
-			handler := http.HandlerFunc(CalcHandler)
+			handler := http.HandlerFunc(server.CalcHandler)
 			handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != tc.statusCode {
@@ -89,7 +90,7 @@ func TestApplication_RunServer(t *testing.T) {
 
 			rr := httptest.NewRecorder()
 
-			handler := http.HandlerFunc(CalcHandler)
+			handler := http.HandlerFunc(server.CalcHandler)
 			handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != tc.statusCode {
