@@ -82,6 +82,9 @@ func Calc(expression string) (float64, error) {
 			x := new_stack[len(new_stack)-2]
 			y := new_stack[len(new_stack)-1]
 			new_stack = new_stack[:len(new_stack)-2]
+			if y == 0 && elem == "/" {
+				return 0, ErrInvalidExpression
+			}
 			new_stack = append(new_stack, functions(x, y, elem))
 		}
 	}
