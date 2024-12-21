@@ -1,12 +1,7 @@
-package utils
+package calculate
 
 import (
-	"errors"
 	"strconv"
-)
-
-var (
-	input_error = errors.New("uncorrect data")
 )
 
 func priority(elem string) int {
@@ -40,40 +35,40 @@ func functions(x, y float64, s string) float64 {
 func Calc(expression string) (float64, error) {
 
 	if expression == "" {
-		return 0, input_error
+		return 0, ErrInvalidExpression
 	}
 
 	out := []string{}
-	steck := []string{}
+	stack := []string{}
 	for _, r := range expression {
 		s := string(r)
 		if _, err := strconv.Atoi(s); err == nil {
 			out = append(out, s)
 		} else if s != "(" && s != ")" {
 			for {
-				if !(len(steck) > 0 && priority(steck[len(steck)-1]) >= priority(s)) {
+				if !(len(stack) > 0 && priority(stack[len(stack)-1]) >= priority(s)) {
 					break
 				}
-				out = append(out, steck[len(steck)-1])
-				steck = steck[:len(steck)-1]
+				out = append(out, stack[len(stack)-1])
+				stack = stack[:len(stack)-1]
 			}
-			steck = append(steck, s)
+			stack = append(stack, s)
 		} else if s == "(" {
-			steck = append(steck, s)
+			stack = append(stack, s)
 		} else {
 			for {
-				if steck[len(steck)-1] == "(" {
+				if stack[len(stack)-1] == "(" {
 					break
 				}
-				out = append(out, steck[len(steck)-1])
-				steck = steck[:len(steck)-1]
+				out = append(out, stack[len(stack)-1])
+				stack = stack[:len(stack)-1]
 			}
-			steck = steck[:len(steck)-1]
+			stack = stack[:len(stack)-1]
 		}
 	}
 
-	for i := len(steck) - 1; i > -1; i-- {
-		out = append(out, steck[i])
+	for i := len(stack) - 1; i > -1; i-- {
+		out = append(out, stack[i])
 	}
 
 	new_stack := []float64{}
@@ -82,7 +77,7 @@ func Calc(expression string) (float64, error) {
 			new_stack = append(new_stack, float64(i))
 		} else {
 			if len(new_stack) < 2 {
-				return 0, input_error
+				return 0, ErrInvalidExpression
 			}
 			x := new_stack[len(new_stack)-2]
 			y := new_stack[len(new_stack)-1]
